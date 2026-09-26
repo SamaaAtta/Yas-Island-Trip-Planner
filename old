@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Yas Island Getaway — Trip Itinerary</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&family=Work+Sans:wght@400;500;600&display=swap"
+  rel="stylesheet"
+>
+
+<style>
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+  --navy: #0F2438;
+  --navy-deep: #081627;
+  --sand: #FBF1E1;
+  --sand-deep: #F3E2C4;
+  --coral: #FF6B4D;
+  --gold: #F0A93B;
+  --teal: #1FA6A0;
+  --teal-deep: #0B4F55;
+  --ink: #14202B;
+  --cream: #FFFBF4;
+  --line: rgba(20, 32, 43, 0.12);
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Work Sans", sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: "Archivo Black", sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+.section-label {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================
+   PDF BUTTON
+   ========================================================= */
+
+.pdf-toolbar {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 99999;
+}
+
+.pdf-button {
+  border: none;
+  background: var(--coral);
+  color: white;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  transition: 0.2s ease;
+}
+
+.pdf-button:hover {
+  transform: translateY(-2px);
+  background: #e95539;
+}
+
+.pdf-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(8,22,39,0.88),
+      rgba(8,22,39,0.58),
+      rgba(8,22,39,0.35)
+    );
+
+  z-index: 1;
+}
+
+.hero .wrap {
+  position: relative;
+  z-index: 2;
+  padding-top: 64px;
+  padding-bottom: 48px;
+}
+
+.hero-kicker {
+  color: var(--gold);
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  line-height: 0.98;
+  color: #fff;
+}
+
+.hero .sub {
+  margin-top: 16px;
+  max-width: 560px;
+  font-size: 1.08rem;
+  color: rgba(251,241,225,0.9);
+}
+
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 38px;
+  padding: 9px 18px;
+
+  border-radius: 100px;
+
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+
+  color: var(--sand);
+  font-size: 0.88rem;
+  font-weight: 500;
+
+  backdrop-filter: blur(4px);
+}
+
+.stat-chip b {
+  color: #fff;
+}
+
+/* =========================================================
+   FLIGHTS
+   ========================================================= */
+
+.flights {
+  background: var(--navy);
+  padding: 36px 0 44px;
+}
+
+.flight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.flight-card {
+  min-height: 150px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px;
+
+  padding: 22px;
+
+  color: var(--sand);
+}
+
+.flight-card .route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+
+  color: #fff;
+}
+
+.flight-card .route svg {
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+}
+
+.flight-card .times {
+  margin-top: 12px;
+  font-size: 0.92rem;
+  color: rgba(251,241,225,0.75);
+}
+
+.flight-card .times b {
+  color: var(--sand);
+}
+
+.flight-card .tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  align-self: flex-start;
+  margin-top: 14px;
+
+  padding: 5px 11px;
+
+  border-radius: 100px;
+
+  background: rgba(240,169,59,0.18);
+  color: var(--gold);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.flight-note {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: rgba(251,241,225,0.6);
+}
+
+/* =========================================================
+   HOTEL
+   ========================================================= */
+
+.hotel-section {
+  background:
+    linear-gradient(
+      135deg,
+      #0F2438 0%,
+      #1A3A55 100%
+    );
+
+  color: var(--sand);
+
+  padding: 44px 0 48px;
+
+  border-top: 3px solid var(--gold);
+  border-bottom: 3px solid var(--gold);
+}
+
+.hotel-section .section-label {
+  color: var(--gold);
+}
+
+.hotel-card {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+
+  gap: 24px;
+
+  margin-top: 16px;
+
+  padding: 24px;
+
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+
+  border-radius: 18px;
+}
+
+.hotel-name {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 1.7rem;
+  line-height: 1.1;
+  color: #fff;
+}
+
+.hotel-name span {
+  color: var(--gold);
+}
+
+.hotel-sub {
+  margin-top: 6px;
+  color: rgba(251,241,225,0.7);
+  font-size: 0.92rem;
+}
+
+.hotel-badge {
+  display: inline-flex;
+
+  width: fit-content;
+
+  margin-top: 10px;
+  padding: 5px 12px;
+
+  border-radius: 100px;
+
+  background: rgba(240,169,59,0.2);
+  color: var(--gold);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.hotel-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 42px;
+  padding: 8px 0;
+
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+
+  color: rgba(251,241,225,0.85);
+  font-size: 0.92rem;
+}
+
+.hotel-detail-item:last-of-type {
+  border-bottom: none;
+}
+
+.hotel-detail-item svg {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  color: var(--gold);
+}
+
+.hotel-price {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 78px;
+
+  margin-top: 12px;
+  padding: 12px 18px;
+
+  text-align: center;
+
+  background: rgba(255,107,77,0.15);
+  border: 1px solid rgba(255,107,77,0.3);
+
+  border-radius: 12px;
+}
+
+.hotel-price .amount {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.hotel-price .amount span {
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+.hotel-price .label {
+  margin-top: 6px;
+  color: rgba(251,241,225,0.6);
+  font-size: 0.78rem;
+}
+
+.h-right {
+  min-height: 100%;
+}
+
+.hotel-card .hotel-image {
+  width: 100%;
+  height: 100%;
+  min-height: 310px;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 14px;
+}
+
+/* =========================================================
+   DAYS AREA
+   ========================================================= */
+
+.days-area {
+  padding: 56px 0 60px;
+  background: var(--cream);
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+/* =========================================================
+   DAY CARD
+   ========================================================= */
+
+.day-section {
+  position: relative;
+
+  padding: 26px;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.05);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.day-section.alt-a {
+  background: #fff;
+}
+
+.day-section.alt-b {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(31,166,160,0.13),
+      rgba(31,166,160,0.04)
+    );
+}
+
+.day-section.alt-c {
+  background: #fff;
+}
+
+.day-section.alt-d {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(240,169,59,0.16),
+      rgba(240,169,59,0.04)
+    );
+}
+
+.day-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.day-num {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--coral);
+}
+
+.day-title {
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+.day-date {
+  margin-top: 7px;
+  margin-bottom: 20px;
+
+  color: #5b6b78;
+
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+
+  gap: 13px;
+
+  margin-left: 8px;
+  padding-left: 22px;
+
+  border-left: 2px solid var(--line);
+}
+
+.tl-item {
+  position: relative;
+}
+
+.tl-item::before {
+  content: "";
+
+  position: absolute;
+
+  left: -28px;
+  top: 4px;
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: var(--coral);
+
+  border: 3px solid #fff;
+}
+
+.day-section.alt-b .tl-item::before {
+  background: var(--teal-deep);
+  border-color: #F3FBFA;
+}
+
+.day-section.alt-d .tl-item::before {
+  background: var(--gold);
+  border-color: #FFF9EE;
+}
+
+.tl-time {
+  font-family: "Archivo", sans-serif;
+
+  font-weight: 700;
+  font-size: 0.75rem;
+
+  color: var(--coral);
+}
+
+.day-section.alt-b .tl-time {
+  color: var(--teal-deep);
+}
+
+.day-section.alt-d .tl-time {
+  color: #B87A1A;
+}
+
+.tl-text {
+  margin-top: 2px;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.tl-text .place {
+  font-weight: 700;
+}
+
+.tl-text .detail {
+  display: block;
+  margin-top: 2px;
+
+  color: #5b6b78;
+  font-size: 0.77rem;
+  line-height: 1.35;
+}
+
+/* =========================================================
+   FEATURE CARD
+   ========================================================= */
+
+.feature-card {
+  display: grid;
+  grid-template-columns: 42% 58%;
+
+  align-items: stretch;
+
+  margin-top: auto;
+  padding-top: 22px;
+
+  overflow: hidden;
+
+  background: #fff;
+
+  border: 1px solid var(--line);
+
+  border-radius: 14px;
+}
+
+.feature-card .fc-art {
+  position: relative;
+
+  width: 100%;
+  height: 165px;
+
+  overflow: hidden;
+
+  background: #f0f2f5;
+}
+
+.feature-card .fc-art img {
+  width: 100%;
+  height: 100%;
+
+  max-width: none;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.feature-card .fc-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 15px 16px;
+}
+
+.feature-card .fc-tag {
+  font-family: "Archivo", sans-serif;
+
+  font-weight: 700;
+  font-size: 0.65rem;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+
+  color: var(--coral);
+}
+
+.feature-card h3 {
+  margin-top: 4px;
+
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+
+  font-size: 0.98rem;
+
+  color: var(--ink);
+
+  line-height: 1.2;
+}
+
+.feature-card p {
+  margin-top: 6px;
+
+  color: #5b6b78;
+
+  font-size: 0.76rem;
+  line-height: 1.42;
+}
+
+/* Special crop for Sheikh Zayed image */
+
+.day-section.alt-d .fc-art img {
+  object-position: center center;
+}
+
+.note-box {
+  margin-top: 16px;
+
+  padding: 11px 14px;
+
+  background: rgba(20,32,43,0.04);
+
+  border-left: 3px solid var(--gold);
+
+  border-radius: 0 10px 10px 0;
+
+  color: #43525f;
+
+  font-size: 0.76rem;
+}
+
+.note-box b {
+  color: var(--ink);
+}
+
+/* =========================================================
+   BUDGET
+   ========================================================= */
+
+.budget {
+  padding: 60px 0 56px;
+
+  background: var(--navy-deep);
+
+  color: var(--sand);
+}
+
+.budget .section-label {
+  color: var(--gold);
+}
+
+.budget h2 {
+  margin-top: 10px;
+
+  color: #fff;
+
+  font-size: 2.1rem;
+}
+
+.budget-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 14px;
+
+  margin-top: 30px;
+}
+
+.b-card {
+  min-height: 130px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 18px;
+
+  background: rgba(255,255,255,0.06);
+
+  border: 1px solid rgba(255,255,255,0.14);
+
+  border-radius: 14px;
+}
+
+.b-label {
+  font-family: "Archivo", sans-serif;
+
+  font-weight: 700;
+  font-size: 0.75rem;
+
+  color: rgba(251,241,225,0.65);
+}
+
+.b-amount {
+  margin-top: 6px;
+
+  font-family: "Archivo Black", sans-serif;
+
+  font-size: 1.5rem;
+
+  color: #fff;
+}
+
+.b-amount span {
+  color: var(--gold);
+
+  font-family: "Archivo", sans-serif;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.b-detail {
+  margin-top: 6px;
+
+  color: rgba(251,241,225,0.55);
+
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.b-total {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 16px;
+
+  padding: 22px 24px;
+
+  background:
+    linear-gradient(
+      120deg,
+      rgba(255,107,77,0.22),
+      rgba(31,166,160,0.22)
+    );
+
+  border: 1px solid rgba(255,255,255,0.2);
+
+  border-radius: 14px;
+}
+
+.t-label {
+  font-family: "Archivo", sans-serif;
+
+  font-weight: 700;
+  font-size: 0.95rem;
+
+  color: #fff;
+}
+
+.t-sub {
+  margin-top: 4px;
+
+  color: rgba(251,241,225,0.7);
+
+  font-size: 0.8rem;
+}
+
+.t-amount {
+  font-family: "Archivo Black", sans-serif;
+
+  font-size: 2.2rem;
+
+  color: #fff;
+}
+
+.shopping-line {
+  margin-top: 14px;
+
+  color: rgba(251,241,225,0.6);
+
+  font-size: 0.85rem;
+}
+
+/* =========================================================
+   TIPS
+   ========================================================= */
+
+.tips {
+  padding: 56px 0 64px;
+
+  background: var(--sand);
+}
+
+.tips h2 {
+  margin-top: 8px;
+
+  font-size: 1.7rem;
+}
+
+.tip-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 16px;
+
+  margin-top: 26px;
+}
+
+.tip-card {
+  display: flex;
+
+  flex-direction: column;
+
+  padding: 18px;
+
+  background: #fff;
+
+  border: 1px solid var(--line);
+
+  border-radius: 14px;
+}
+
+.tip-card svg {
+  width: 22px;
+  height: 22px;
+
+  margin-bottom: 10px;
+
+  color: var(--coral);
+}
+
+.tip-card h3 {
+  font-family: "Archivo", sans-serif;
+
+  font-size: 0.95rem;
+
+  font-weight: 800;
+}
+
+.tip-card p {
+  margin-top: 6px;
+
+  color: #5b6b78;
+
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+  padding: 36px 28px 46px;
+
+  background: var(--navy-deep);
+
+  text-align: center;
+}
+
+footer .fly {
+  margin-bottom: 8px;
+
+  font-family: "Archivo", sans-serif;
+
+  font-weight: 800;
+
+  font-size: 1rem;
+
+  color: var(--sand);
+}
+
+footer p {
+  color: rgba(251,241,225,0.55);
+
+  font-size: 0.82rem;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .budget-grid,
+  .tip-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .days-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-grid,
+  .budget-grid,
+  .tip-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hotel-card {
+    grid-template-columns: 1fr;
+  }
+
+  .hotel-card .hotel-image {
+    min-height: 220px;
+  }
+
+}
+
+@media (max-width: 500px) {
+
+  .wrap {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .hero {
+    min-height: 420px;
+  }
+
+  .day-section {
+    padding: 20px;
+  }
+
+  .feature-card {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card .fc-art {
+    height: 200px;
+  }
+
+}
+
+/* =========================================================
+   PDF MODE
+   ========================================================= */
+
+.pdf-mode .pdf-toolbar {
+  display: none !important;
+}
+
+.pdf-mode {
+  background: #FFFBF4 !important;
+}
+
+.pdf-mode #itinerary-content {
+  width: 1180px !important;
+  max-width: 1180px !important;
+  margin: 0 auto !important;
+}
+
+.pdf-mode .wrap {
+  max-width: 1120px !important;
+}
+
+.pdf-mode .hero {
+  min-height: 400px;
+}
+
+.pdf-mode .days-area {
+  padding-top: 35px;
+  padding-bottom: 40px;
+}
+
+.pdf-mode .days-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 16px !important;
+}
+
+.pdf-mode .day-section {
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.pdf-mode .day-num {
+  font-size: 2rem;
+}
+
+.pdf-mode .day-title {
+  font-size: 1.12rem;
+}
+
+.pdf-mode .day-date {
+  margin-bottom: 14px;
+}
+
+.pdf-mode .timeline {
+  gap: 9px;
+}
+
+.pdf-mode .tl-text {
+  font-size: 0.78rem;
+}
+
+.pdf-mode .tl-text .detail {
+  font-size: 0.68rem;
+}
+
+.pdf-mode .feature-card {
+  padding-top: 15px;
+}
+
+.pdf-mode .feature-card .fc-art {
+  height: 135px;
+}
+
+.pdf-mode .feature-card .fc-body {
+  padding: 12px;
+}
+
+.pdf-mode .feature-card h3 {
+  font-size: 0.88rem;
+}
+
+.pdf-mode .feature-card p {
+  font-size: 0.68rem;
+}
+
+.pdf-mode .note-box {
+  margin-top: 12px;
+  padding: 9px 11px;
+  font-size: 0.67rem;
+}
+
+.pdf-mode .budget {
+  padding-top: 38px;
+  padding-bottom: 38px;
+}
+
+.pdf-mode .budget-grid {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.pdf-mode .b-card {
+  min-height: 105px;
+  padding: 14px;
+}
+
+.pdf-mode .tip-grid {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.pdf-mode .tip-card {
+  padding: 14px;
+}
+
+.pdf-mode .tip-card p {
+  font-size: 0.7rem;
+}
+
+.pdf-capture {
+  position: absolute !important;
+  left: -20000px !important;
+  top: 0 !important;
+
+  width: 1180px !important;
+
+  visibility: visible !important;
+
+  pointer-events: none !important;
+}
+
+/* Prevent cards from splitting internally */
+
+.day-section,
+.feature-card,
+.hotel-card,
+.flight-card,
+.b-card,
+.tip-card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================================================
+     PDF BUTTON
+     ========================================================= -->
+
+<div class="pdf-toolbar" data-html2canvas-ignore="true">
+
+<button
+id="downloadPdfButton"
+class="pdf-button"
+type="button"
+onclick="downloadPDF()"
+
+>
+
+↓ Download PDF </button>
+
+</div>
+
+<!-- =========================================================
+     ITINERARY CONTENT
+     ========================================================= -->
+
+<div id="itinerary-content">
+
+<!-- =========================================================
+     HERO
+     ========================================================= -->
+
+<section class="hero">
+
+<img
+src="images/yasisland.jpg"
+alt="Yas Island"
+class="hero-bg"
+
+>
+
+<div class="hero-overlay"></div>
+
+<div class="wrap">
+
+<div class="hero-kicker">
+TRIP ITINERARY
+</div>
+
+<h1>
+Yas Island
+</h1>
+
+<p class="sub">
+Four days on Abu Dhabi's entertainment island —
+theme parks, seafood, the Sheikh Zayed Grand Mosque,
+and a beach-resort base to come home to each night.
+</p>
+
+<div class="stat-row">
+
+<div class="stat-chip">
+<b>4</b> days
+</div>
+
+<div class="stat-chip">
+<b>3</b> nights
+</div>
+
+<div class="stat-chip">
+<b>3</b> adults
+</div>
+
+<div class="stat-chip">
+<b>3</b> theme parks
+</div>
+
+<div class="stat-chip">
+Bahrain ⇄ Abu Dhabi
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     FLIGHTS
+     ========================================================= -->
+
+<section class="flights">
+
+<div class="wrap">
+
+<div class="section-label" style="color:var(--gold);">
+GETTING THERE
+</div>
+
+<div class="flight-grid">
+
+<div class="flight-card">
+
+<div class="route">
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M2 16l20-8-8 20-3-8-8-4z"/>
+</svg>
+
+<span>BAH → AUH</span>
+
+</div>
+
+<div class="times">
+Sep 10 · <b>09:00 – 11:15</b> · Gulf Air GF109
+</div>
+
+<span class="tag">
+OUTBOUND · DAY 1
+</span>
+
+</div>
+
+<div class="flight-card">
+
+<div class="route">
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M22 8L2 16l8-20 3 8 8 4z"/>
+</svg>
+
+<span>AUH → BAH</span>
+
+</div>
+
+<div class="times">
+Sep 13 · <b>19:00 – 19:35</b> · Gulf Air
+</div>
+
+<span class="tag">
+RETURN · DAY 4
+</span>
+
+</div>
+
+</div>
+
+<div class="flight-note">
+Flights for 3 adults ≈ 150 BHD total.
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     HOTEL
+     ========================================================= -->
+
+<section class="hotel-section">
+
+<div class="wrap">
+
+<div class="section-label">
+ACCOMMODATION
+</div>
+
+<div class="hotel-card">
+
+<div class="h-left">
+
+<div class="hotel-name">
+Yas Plaza <span>Mangroves</span>
+</div>
+
+<div class="hotel-sub">
+Yas Island, Abu Dhabi
+</div>
+
+<div class="hotel-badge">
+✦ 3 NIGHTS · 10/09 – 13/09
+</div>
+
+<div class="hotel-detail-item">
+<b>Check-in:</b> 10 Sep 2026 · <b>Check-out:</b> 13 Sep 2026
+</div>
+
+<div class="hotel-detail-item">
+<b>3 adults</b> · Mangrove Wing
+</div>
+
+<div class="hotel-detail-item">
+<b>Includes:</b> Daily breakfast · Theme park pass
+</div>
+
+<div class="hotel-price">
+
+<div class="amount">
+220 <span>BHD</span>
+</div>
+
+<div class="label">
+Total for 3 adults · 3 nights
+</div>
+
+</div>
+
+</div>
+
+<div class="h-right">
+
+<img
+src="images/hotel.jpg"
+alt="Yas Plaza Mangroves Hotel"
+class="hotel-image"
+
+>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     DAYS AREA
+     ========================================================= -->
+
+<section class="days-area">
+
+<div class="wrap">
+
+<div class="days-grid">
+
+<!-- =========================================================
+     DAY 1
+     ========================================================= -->
+
+<section class="day-section alt-a">
+
+<div class="day-head">
+
+<span class="day-num">01</span>
+
+<span class="day-title">
+Arrival &amp; Warner Bros. World
+</span>
+
+</div>
+
+<div class="day-date">
+Wednesday, September 10
+</div>
+
+<div class="timeline">
+
+<div class="tl-item">
+<div class="tl-time">06:00</div>
+<div class="tl-text">
+Leave home for Bahrain International Airport
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">09:00</div>
+<div class="tl-text">
+<span class="place">Flight GF109</span> departs BAH → AUH
+<span class="detail">Lands 11:15</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">12:00</div>
+<div class="tl-text">
+Taxi from airport to hotel
+<span class="detail">≈ 5 BHD</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">12:30</div>
+<div class="tl-text">
+Check in at Yas Plaza Hotel &amp; freshen up
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">13:00</div>
+<div class="tl-text">
+<span class="place">Warner Bros. World Abu Dhabi</span>
+<span class="detail">
+Indoor theme park — rides for every age,
+air-conditioned all afternoon
+</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">18:00</div>
+<div class="tl-text">
+Dinner at Yas Mall — <span class="place">Il Forno</span>
+<span class="detail">Pizza &amp; pasta</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">19:00</div>
+<div class="tl-text">Coffee stop — matcha</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">20:30</div>
+<div class="tl-text">
+Back to the hotel, rest up for the water park
+</div>
+</div>
+
+</div>
+
+<div class="feature-card">
+
+<div class="fc-art">
+<img src="images/wb.avif" alt="Warner Bros. World Abu Dhabi">
+</div>
+
+<div class="fc-body">
+
+<div class="fc-tag">Day 1 highlight</div>
+
+<h3>Warner Bros. World Abu Dhabi</h3>
+
+<p>
+The world's largest indoor theme park,
+split into six lands from Gotham City to
+Cartoon Junction.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     DAY 2
+     ========================================================= -->
+
+<section class="day-section alt-b">
+
+<div class="day-head">
+
+<span class="day-num" style="color:var(--teal-deep);">
+02
+</span>
+
+<span class="day-title">
+Yas Waterworld
+</span>
+
+</div>
+
+<div class="day-date">
+Thursday, September 11
+</div>
+
+<div class="timeline">
+
+<div class="tl-item">
+<div class="tl-time">09:00</div>
+<div class="tl-text">
+Breakfast buffet at the hotel
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">10:30</div>
+<div class="tl-text">
+Get ready for the water park
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">11:00</div>
+<div class="tl-text">
+<span class="place">Yas Waterworld</span>
+<span class="detail">Free shuttle from the hotel</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">17:00</div>
+<div class="tl-text">
+Back to the hotel, shower &amp; change for dinner
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">17:30</div>
+<div class="tl-text">
+Head to Yas Mall
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">18:00</div>
+<div class="tl-text">
+Dinner — <span class="place">Off The Hook</span>
+<span class="detail">Seafood</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">19:30</div>
+<div class="tl-text">
+Coffee — matcha, then a little shopping
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">21:00</div>
+<div class="tl-text">
+Back to the hotel
+</div>
+</div>
+
+</div>
+
+<div class="feature-card">
+
+<div class="fc-art">
+<img src="images/waterpark.avif" alt="Yas Waterworld">
+</div>
+
+<div class="fc-body">
+
+<div class="fc-tag">Day 2 highlight</div>
+
+<h3>Yas Waterworld</h3>
+
+<p>
+43 rides and attractions themed around
+an Emirati pearl-diving legend.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     DAY 3
+     ========================================================= -->
+
+<section class="day-section alt-c">
+
+<div class="day-head">
+
+<span class="day-num">03</span>
+
+<span class="day-title">
+Pool Morning &amp; SeaWorld
+</span>
+
+</div>
+
+<div class="day-date">
+Friday, September 12
+</div>
+
+<div class="timeline">
+
+<div class="tl-item">
+<div class="tl-time">09:00</div>
+<div class="tl-text">
+Breakfast, then a relaxed morning at the hotel pool
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">12:00</div>
+<div class="tl-text">
+<span class="place">SeaWorld Abu Dhabi</span>
+<span class="detail">
+The region's largest indoor marine-life park
+</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">18:00</div>
+<div class="tl-text">
+Dinner &amp; drinks at Yas Mall
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">21:00</div>
+<div class="tl-text">
+Back to the hotel
+</div>
+</div>
+
+</div>
+
+<div class="feature-card">
+
+<div class="fc-art">
+<img src="images/seaworld.avif" alt="SeaWorld Abu Dhabi">
+</div>
+
+<div class="fc-body">
+
+<div class="fc-tag">Day 3 highlight</div>
+
+<h3>SeaWorld Abu Dhabi</h3>
+
+<p>
+Eight ocean realms and a research-and-rescue
+mission behind the exhibits.
+</p>
+
+</div>
+
+</div>
+
+<div class="note-box">
+
+<b>Friday note —</b>
+Some restaurants and attractions may shift
+their opening hours for Friday prayer time.
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     DAY 4
+     ========================================================= -->
+
+<section class="day-section alt-d">
+
+<div class="day-head">
+
+<span class="day-num" style="color:#C77E1B;">
+04
+</span>
+
+<span class="day-title">
+Sheikh Zayed Mosque &amp; Departure
+</span>
+
+</div>
+
+<div class="day-date">
+Saturday, September 13
+</div>
+
+<div class="timeline">
+
+<div class="tl-item">
+<div class="tl-time">08:00</div>
+<div class="tl-text">
+Breakfast, pack the bags
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">09:30</div>
+<div class="tl-text">
+<span class="place">
+Sheikh Zayed Grand Mosque
+</span>
+<span class="detail">
+Taxi ≈ 7 BHD each way —
+dress modestly, abayas available if needed
+</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">12:00</div>
+<div class="tl-text">
+Return to hotel, check out
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">16:00</div>
+<div class="tl-text">
+Taxi to Abu Dhabi Airport
+<span class="detail">≈ 5 BHD</span>
+</div>
+</div>
+
+<div class="tl-item">
+<div class="tl-time">19:00</div>
+<div class="tl-text">
+Flight departs AUH → BAH
+<span class="detail">Lands 19:35</span>
+</div>
+</div>
+
+</div>
+
+<div class="feature-card">
+
+<div class="fc-art">
+
+<img
+src="images/sheikhzayed.png"
+alt="Sheikh Zayed Grand Mosque"
+
+>
+
+</div>
+
+<div class="fc-body">
+
+<div class="fc-tag">
+Day 4 highlight
+</div>
+
+<h3>
+Sheikh Zayed Grand Mosque
+</h3>
+
+<p>
+One of the world's largest mosques,
+a 40-minute drive from Yas Island —
+go mid-morning for good light and
+smaller crowds.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     BUDGET
+     ========================================================= -->
+
+<section class="budget">
+
+<div class="wrap">
+
+<div class="section-label">
+BUDGET · 3 ADULTS
+</div>
+
+<h2>
+What it costs
+</h2>
+
+<div class="budget-grid">
+
+<div class="b-card">
+
+<div class="b-label">FLIGHTS</div>
+
+<div class="b-amount">
+150 <span>BHD</span>
+</div>
+
+<div class="b-detail">
+Round trip, all 3 adults
+</div>
+
+</div>
+
+<div class="b-card">
+
+<div class="b-label">HOTEL</div>
+
+<div class="b-amount">
+220 <span>BHD</span>
+</div>
+
+<div class="b-detail">
+3 nights, breakfast + theme-park pass
+</div>
+
+</div>
+
+<div class="b-card">
+
+<div class="b-label">TRANSPORT</div>
+
+<div class="b-amount">
+25 <span>BHD</span>
+</div>
+
+<div class="b-detail">
+Airport transfers + mosque round trip
+</div>
+
+</div>
+
+<div class="b-card">
+
+<div class="b-label">FOOD &amp; DRINKS</div>
+
+<div class="b-amount">
+105 <span>BHD</span>
+</div>
+
+<div class="b-detail">
+Lunch/dinner + drinks
+</div>
+
+</div>
+
+</div>
+
+<div class="b-total">
+
+<div>
+
+<div class="t-label">
+ESTIMATED TOTAL
+</div>
+
+<div class="t-sub">
+Flights + hotel + transport + food,
+before shopping
+</div>
+
+</div>
+
+<div class="t-amount">
+500 BHD
+</div>
+
+</div>
+
+<div class="shopping-line">
++ Shopping &amp; gifts budget:
+50 BHD per person (150 BHD for 3)
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     TIPS
+     ========================================================= -->
+
+<section class="tips">
+
+<div class="wrap">
+
+<div class="section-label" style="color:var(--coral);">
+GOOD TO KNOW
+</div>
+
+<h2>
+Before you go
+</h2>
+
+<div class="tip-grid">
+
+<div class="tip-card">
+
+<h3>Weather</h3>
+
+<p>
+Early September in Abu Dhabi is hot and humid.
+Wear light fabrics, sunscreen and drink plenty of water.
+</p>
+
+</div>
+
+<div class="tip-card">
+
+<h3>Pack for the parks</h3>
+
+<p>
+Swimwear, reef shoes and a change of clothes
+for Yas Waterworld. Bring a light layer for indoor parks.
+</p>
+
+</div>
+
+<div class="tip-card">
+
+<h3>Mosque dress code</h3>
+
+<p>
+Shoulders, arms and legs covered.
+Women should bring a scarf for their hair.
+</p>
+
+</div>
+
+<div class="tip-card">
+
+<h3>Confirm before you land</h3>
+
+<p>
+Double-check which theme parks are included
+with the hotel's park pass.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer>
+
+<div class="fly">
+Have a great trip ✈
+</div>
+
+<p>
+Yas Island, Abu Dhabi ·
+3 nights, 4 days ·
+September 2026
+</p>
+
+</footer>
+
+</div>
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+/* =========================================================
+   WAIT FOR ALL IMAGES
+   ========================================================= */
+
+function waitForImages() {
+
+  const images =
+    Array.from(
+      document.querySelectorAll("#itinerary-content img")
+    );
+
+  return Promise.all(
+
+    images.map(img => {
+
+      if (
+        img.complete &&
+        img.naturalWidth > 0
+      ) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve, reject) => {
+
+        img.onload = () => resolve();
+
+        img.onerror = () =>
+          reject(
+            new Error(
+              "Could not load image: " +
+              img.getAttribute("src")
+            )
+          );
+
+      });
+
+    })
+
+  );
+
+}
+
+/* =========================================================
+   WAIT FOR FONTS
+   ========================================================= */
+
+async function waitForFonts() {
+
+  if (document.fonts) {
+
+    try {
+      await document.fonts.ready;
+    } catch (error) {
+      console.warn(error);
+    }
+
+  }
+
+}
+
+/* =========================================================
+   NEXT FRAME
+   ========================================================= */
+
+function nextFrame() {
+
+  return new Promise(resolve => {
+
+    requestAnimationFrame(() => {
+
+      requestAnimationFrame(resolve);
+
+    });
+
+  });
+
+}
+
+/* =========================================================
+   DOWNLOAD PDF
+   ========================================================= */
+
+async function downloadPDF() {
+
+  const button =
+    document.getElementById(
+      "downloadPdfButton"
+    );
+
+  const content =
+    document.getElementById(
+      "itinerary-content"
+    );
+
+  const originalText =
+    button.innerHTML;
+
+  button.disabled = true;
+
+  try {
+
+    if (
+      typeof html2canvas !== "function"
+    ) {
+
+      throw new Error(
+        "html2canvas failed to load."
+      );
+
+    }
+
+    if (
+      !window.jspdf ||
+      !window.jspdf.jsPDF
+    ) {
+
+      throw new Error(
+        "jsPDF failed to load."
+      );
+
+    }
+
+    button.innerHTML =
+      "Loading images...";
+
+    await waitForImages();
+
+    await waitForFonts();
+
+    button.innerHTML =
+      "Preparing PDF...";
+
+    document.body.classList.add(
+      "pdf-mode"
+    );
+
+    await nextFrame();
+
+    button.innerHTML =
+      "Creating PDF...";
+
+    /*
+       Capture the complete itinerary once.
+       All images are local, avoiding
+       tainted canvas problems.
+    */
+
+    const canvas =
+      await html2canvas(
+        content,
+        {
+
+          scale: 2,
+
+          useCORS: true,
+
+          allowTaint: false,
+
+          backgroundColor:
+            "#FFFBF4",
+
+          scrollX: 0,
+
+          scrollY: 0,
+
+          windowWidth:
+            content.scrollWidth,
+
+          windowHeight:
+            content.scrollHeight,
+
+          imageTimeout: 30000,
+
+          logging: false
+
+        }
+      );
+
+    if (
+      !canvas ||
+      canvas.width === 0 ||
+      canvas.height === 0
+    ) {
+
+      throw new Error(
+        "Could not capture the itinerary."
+      );
+
+    }
+
+    const {
+      jsPDF
+    } = window.jspdf;
+
+    const pdf =
+      new jsPDF({
+
+        orientation: "portrait",
+
+        unit: "mm",
+
+        format: "a4",
+
+        compress: true
+
+      });
+
+    const pageWidth =
+      pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+      pdf.internal.pageSize.getHeight();
+
+    const margin =
+      5;
+
+    const contentWidth =
+      pageWidth - margin * 2;
+
+    /*
+       Calculate image size.
+    */
+
+    const imageHeight =
+      canvas.height *
+      contentWidth /
+      canvas.width;
+
+    /*
+       Split the long canvas across A4 pages.
+       This prevents everything from becoming
+       extremely small.
+    */
+
+    const pageContentHeight =
+      pageHeight - margin * 2;
+
+    let heightLeft =
+      imageHeight;
+
+    let position =
+      margin;
+
+    const imageData =
+      canvas.toDataURL(
+        "image/jpeg",
+        0.94
+      );
+
+    pdf.addImage(
+
+      imageData,
+
+      "JPEG",
+
+      margin,
+
+      position,
+
+      contentWidth,
+
+      imageHeight,
+
+      undefined,
+
+      "FAST"
+
+    );
+
+    heightLeft -=
+      pageContentHeight;
+
+    while (
+      heightLeft > 0
+    ) {
+
+      pdf.addPage();
+
+      position =
+        margin - (
+          imageHeight -
+          heightLeft
+        );
+
+      pdf.addImage(
+
+        imageData,
+
+        "JPEG",
+
+        margin,
+
+        position,
+
+        contentWidth,
+
+        imageHeight,
+
+        undefined,
+
+        "FAST"
+
+      );
+
+      heightLeft -=
+        pageContentHeight;
+
+    }
+
+    button.innerHTML =
+      "Saving PDF...";
+
+    pdf.save(
+      "Yas_Island_Getaway_Itinerary.pdf"
+    );
+
+    button.innerHTML =
+      "✓ PDF Downloaded";
+
+    setTimeout(() => {
+
+      button.innerHTML =
+        originalText;
+
+      button.disabled =
+        false;
+
+    }, 2500);
+
+  } catch (error) {
+
+    console.error(
+      "PDF Error:",
+      error
+    );
+
+    alert(
+
+      "PDF generation failed.\n\n" +
+
+      error.message +
+
+      "\n\nMake sure your folder looks like:\n\n" +
+
+      "YasIsland/\n" +
+      "  Yas.html\n" +
+      "  images/\n" +
+      "    yasisland.jpg\n" +
+      "    hotel.jpg\n" +
+      "    wb.avif\n" +
+      "    waterpark.avif\n" +
+      "    seaworld.avif\n" +
+      "    sheikhzayed.png"
+
+    );
+
+    button.disabled =
+      false;
+
+    button.innerHTML =
+      originalText;
+
+  } finally {
+
+    document.body.classList.remove(
+      "pdf-mode"
+    );
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
